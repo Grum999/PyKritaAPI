@@ -3,7 +3,7 @@
 This script allows to build API documentation for [Krita](https://krita.org).
 
 _An online version of produced documentation is available at https://apidoc.krita.maou-maou.fr_
-_This documentation is updated every night at 00.30am UTC_
+_This documentation is updated every night at ~00.30am UTC_
 
 
 ## Download, Install & Execute
@@ -18,9 +18,9 @@ To use the tool, you'll need:
 
 ### Create directories
 
-_Instructions and example will assume the following paths; adapt instructions to paths you want to use_
+_Instructions and examples will assume the following paths are used; adapt instructions to paths you want to use_
 
-Create followings directories
+Create following directories:
 - `~/kritadoc`
 - `~/kritadoc/html`
 
@@ -28,7 +28,7 @@ Create followings directories
 
 ```bash
 cd ~/kritadoc
-git clone git@github.com:Grum999/PyKritaAPI.git
+git clone https://github.com/Grum999/PyKritaAPI.git
 ```
 
 ### Download Krita Source code
@@ -48,15 +48,17 @@ cd ~/kritadoc/PyKritaAPI
 ./pykritaapi.py --kritaSrc ~/kritadoc/krita --output-html ~/kritadoc/html
 ```
 
-Documentation will be available in `~/kritadoc/html` directory.
+Produced HTML documentation will be available in `~/kritadoc/html` directory.
 
-Note that during process, the script will proceed to checkout of all tags, then if the local Krita repository provided is the one used for your developments, take care to not have any ongoing change - checkout may fails:
+> **Note **
+> During process, the script will proceed to checkout of all tags.
+> If the local Krita repository provided is the one used for your developments, take care to not have any ongoing untracked/uncommited change - checkout may fails:
 - Use a dedicated local repository \
 or
 - Stash all your changes before using the script
 
 First execution may takes some times as script will do a checkout for all releases tags.
-For next execution only new tags are checked out.
+For next executions, only new tags are checked out.
 
 You can force script to a complete rebuild with `--reset` option
 
@@ -65,7 +67,7 @@ cd ~/kritadoc/PyKritaAPI
 ./pykritaapi.py --kritaSrc ~/kritadoc/krita --output-html ~/kritadoc/html --reset
 ```
 
-There's some additional optins, use option `--help` to get them:
+There's some additional options, use option `--help` to list them:
 ```bash
 cd ~/kritadoc/PyKritaAPI
 ./pykritaapi.py --help
