@@ -76,8 +76,13 @@ class LanguageDefCpp(LanguageDef):
                           r"QList<[^>]+>|QMap<[^>]+>",
                           caseInsensitive=False),
 
+            TokenizerRule(LanguageDefCpp.ITokenType.IDENTIFIER,
+                          r"Q_DECL_DEPRECATED",
+                          caseInsensitive=False),
+
+
             TokenizerRule(LanguageDefCpp.ITokenType.IGNORED,
-                          r"^\s*~[^;]+;|^\s*explicit[^;]*;|#[^\n]*$|[\*\-&~]|const|override|Q_SLOTS|Q_DECL_DEPRECATED"),
+                          r"^\s*~[^;]+;|^\s*explicit[^;]*;|#[^\n]*$|[\*\-&~]|const|override|Q_SLOTS"),
 
             TokenizerRule(LanguageDefCpp.ITokenType.IDENTIFIER,
                           r"\d+|\b(?:[a-zA-Z_][a-zA-Z0-9_]*)(?:\<(?:[a-zA-Z_][a-zA-Z0-9_]*\*?)(?:\s*,\s*[a-zA-Z_][a-zA-Z0-9_]*\*?)*\>)?",
@@ -539,6 +544,7 @@ class KritaApiMethod:
         self.__static = False
         self.__virtual = False
         self.__signal = False
+        self.__deprecated = False
         self.__parameters = []
 
     def __repr__(self):
@@ -557,10 +563,12 @@ class KritaApiMethod:
                 'isStatic': self.__static,
                 'isVirtual': self.__virtual,
                 'isSignal': self.__signal,
+                'isDeprecated': self.__deprecated,
                 'parameters': [],
                 'tagRef': {
                         'available': [],
-                        'updated': []
+                        'updated': [],
+                        'deprecated': []
                     }
             }
 
@@ -648,6 +656,12 @@ class KritaApiMethod:
 
     def setSignal(self, value):
         self.__signal = value
+
+    def deprecated(self):
+        return self.__deprecated
+
+    def setDeprecated(self, value):
+        self.__deprecated = value
 
 
 class KritaApiClass:
@@ -877,6 +891,7 @@ class KritaApiAnalysis:
         #   Note: consider to enter class if curly brace count is greater than 0
         kritaMethod = None
         methodName = None
+        methodDeprecated = None
         methodComment = None
         methodReturned = None
         methodVirtual = None
@@ -939,6 +954,11 @@ class KritaApiAnalysis:
                     # memorize comment
                     methodComment = self.__reformatDescription(token.value())
                 else:
+                    methodDeprecated = False
+                    if token.value() == 'Q_DECL_DEPRECATED':
+                        methodDeprecated = True
+                        token = self.__moveNext()
+
                     methodVirtual = False
                     if token.value() == 'virtual':
                         methodVirtual = True
@@ -974,6 +994,7 @@ class KritaApiAnalysis:
                     kritaMethod.setStatic(methodStatic)
                     kritaMethod.setVirtual(methodVirtual)
                     kritaMethod.setSignal(asSignal)
+                    kritaMethod.setDeprecated(methodDeprecated)
                     if methodComment:
                         kritaMethod.setDescription(methodComment)
 
@@ -1151,12 +1172,25 @@ class KritaBuildDoc:
         implementedFrom = refTags["available"][0]
         lastUpdatedFrom = refTags["updated"][-1]
 
+        deprecatedFrom = ""
+        if 'deprecated' in refTags and len(refTags["deprecated"]):
+            deprecatedFrom = refTags["deprecated"][0]
+
+            if len(refTags["updated"]) > 1:
+                lastUpdatedFrom = refTags["updated"][-2]
+
         returned = ''
 
         if mode in('b', 'f'):
             returned += f"<span class='refTag' title='First implemented version'><span class='refTagSymbol'>&#65291;</span><span class='refTagTag'>Krita {self.__getTagName(implementedFrom)}</span></span>"
         if mode == 'l' or mode in ('b', 'ld') and implementedFrom != lastUpdatedFrom:
-            returned += f"<span class='refTag' title='Last updated version'><span class='refTagSymbol'>&#8635;</span><span class='refTagTag'>Krita {self.__getTagName(lastUpdatedFrom)}</span></span>"
+            if deprecatedFrom != lastUpdatedFrom:
+                returned += f"<span class='refTag' title='Last updated version'><span class='refTagSymbol'>&#8635;</span><span class='refTagTag'>Krita {self.__getTagName(lastUpdatedFrom)}</span></span>"
+
+
+        if deprecatedFrom != "":
+            deprecatedFrom = refTags["deprecated"][0]
+            returned += f"<span class='refTag' title='Deprecated from'><span class='refTagSymbol'>&#9888;</span><span class='refTagTag'>Krita {self.__getTagName(deprecatedFrom)}</span></span>"
 
         return returned
 
@@ -1304,9 +1338,9 @@ class KritaBuildDoc:
         self.__kritaReferential['classes'][name]['sourceCodeLine'] = classNfo['sourceCodeLine']
 
         isUpdated = False
-        currentMethods = self.__kritaReferential['classes'][name]['methods']
         for method in classNfo['methods']:
             found = False
+            # look into current class methods
             for updateMethod in self.__kritaReferential['classes'][name]['methods']:
                 if updateMethod["name"] == method['name']:
                     found = True
@@ -1324,6 +1358,8 @@ class KritaBuildDoc:
                         updateMethod['sourceCodeLine'] = method['sourceCodeLine']
 
                 if found:
+                    if method['isDeprecated'] and tagRef not in updateMethod['tagRef']['deprecated']:
+                        updateMethod['tagRef']['deprecated'].append(tagRef)
                     break
 
             if found is False:
@@ -1592,12 +1628,17 @@ class KritaBuildDoc:
                 if method["returned"] != 'void' and method["returned"] != className:
                     returnedType = f"<span class='methodSep'> &#10142; </span><span class='methodParameterType'>{method['returned']}</span>"
 
+                deprecated = ""
+                if method['isDeprecated']:
+                    deprecated = "<span class='rightTag isDeprecated'></span>"
+
                 returned.append(f"""<span class='methodList'
                                           data-version-first='{method['tagRef']['available'][0]}'
                                           data-version-last='{method['tagRef']['updated'][-1]}'>
                                         <a href='#{method['name']}'>
                                             <span class='methodName'>{method['name']}</span><span class='methodSep'>(</span>{'<span class="methodSep">, </span>'.join(parameters)}<span class='methodSep'>)</span>{returnedType}
                                         </a>
+                                        {deprecated}
                                     </span>""")
 
             returned = '\n'.join(returned)
@@ -1646,13 +1687,16 @@ class KritaBuildDoc:
                 isSignal = ""
                 if method['isSignal']:
                     isSignal = "<span class='rightTag isSignal'></span>"
+                isDeprecated = ""
+                if method['isDeprecated']:
+                    isDeprecated = "<span class='rightTag isDeprecated'></span>"
 
                 methodContent = f"""<div class='methodDef'
                                          data-version-first='{method['tagRef']['available'][0]}'
                                          data-version-last='{method['tagRef']['updated'][-1]}'>
                     <div class='def'>
                         <a class='className' id="{method['name']}">{method['name']}</a><span class='methodSep'>(</span>{'<span class="methodSep">, </span>'.join(parameters)}<span class='methodSep'>)</span>{returnedType}
-                        {isVirtual}{isStatic}{isSignal}
+                        {isVirtual}{isStatic}{isSignal}{isDeprecated}
                     </div>
                     <div class='docRefTags'>{self.__htmlFormatRefTags(method["tagRef"])}</div>
                     <div class='docString'>
@@ -1994,7 +2038,7 @@ class KritaBuildDoc:
                             <div class='title'>Krita Python API</div>
                             <div class='version'>
                                 <select class='inputField' id="tags" name="tags">{''.join(tagList)}</select>
-                                <label class='inputField' id="viewModeDeltaLbl"><input type="checkbox" id="viewModeDelta">View implemented changes only</label>
+                                <label class='inputField' id="viewModeDeltaLbl"><input type="checkbox" id="viewModeDelta">Implemented changes only</label>
                             </div>
                         </div>
                         <div class='menuContent'>
@@ -2080,6 +2124,9 @@ class KritaBuildDoc:
                         classes.append('isStatic')
                     if method['isVirtual']:
                         classes.append('isVirtual')
+                    if method['isDeprecated']:
+                        classes.append('isDeprecated')
+
                     if len(classes):
                         classes.append('inline rightTag')
 

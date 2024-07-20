@@ -40,6 +40,10 @@
     --footer-height: 0.75rem;
 }
 
+html {
+    scroll-padding-top: calc(var(--top-height) + 0.5rem);
+}
+
 body {
     color: var(--body-color);
     background-color: var(--body-bg);
@@ -98,7 +102,7 @@ body h1:first-child {
 }
 .menuHeader .title {
     padding: 0.5rem;
-    font-size: 2.65rem;
+    font-size: calc(0.1 * var(--menu-width));
     font-weight: bold;
 }
 
@@ -111,7 +115,7 @@ body h1:first-child {
 
 .menuHeader .inputField {
     margin: 0 0.5rem;
-    font-size: 1rem;
+    font-size: 70%;
     width: calc(100% - 1rem);
     padding: 0.25rem;
 }
@@ -181,6 +185,9 @@ div.methodList span.methodList:hover {
 .refTag .refTagSymbol {
     padding: 0.25rem;
     background: rgba(84, 163, 216, 0.5);
+    font-size: 125%;
+    top: 0.1rem;
+    position: relative;
 }
 .methodDef {
     margin-left: 1em;
@@ -230,6 +237,10 @@ div.methodList span.methodList:hover {
 .rightTag.isVirtual::after {
     background-color: var(--blue);
     content: "Virtual";
+}
+.rightTag.isDeprecated::after {
+    background-color: var(--orange);
+    content: "Deprecated";
 }
 .inline.rightTag::after {
     display: inline-block;
@@ -344,6 +355,7 @@ table.classes tr td {
     width: var(--menu-width);
     background: var(--header-bg);
     height: 100vh;
+    font-size: clamp(1rem, calc(0.085 * var(--menu-width)), 1.25rem);
 }
 .leftMenu .menuContent{
     height: calc(100vh - var(--top-height));
