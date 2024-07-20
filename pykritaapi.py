@@ -1592,7 +1592,9 @@ class KritaBuildDoc:
                 if method["returned"] != 'void' and method["returned"] != className:
                     returnedType = f"<span class='methodSep'> &#10142; </span><span class='methodParameterType'>{method['returned']}</span>"
 
-                returned.append(f"""<span class='methodList'>
+                returned.append(f"""<span class='methodList'
+                                          data-version-first='{method['tagRef']['available'][0]}'
+                                          data-version-last='{method['tagRef']['updated'][-1]}'>
                                         <a href='#{method['name']}'>
                                             <span class='methodName'>{method['name']}</span><span class='methodSep'>(</span>{'<span class="methodSep">, </span>'.join(parameters)}<span class='methodSep'>)</span>{returnedType}
                                         </a>
@@ -1645,7 +1647,9 @@ class KritaBuildDoc:
                 if method['isSignal']:
                     isSignal = "<span class='rightTag isSignal'></span>"
 
-                methodContent = f"""<div class='methodDef'>
+                methodContent = f"""<div class='methodDef'
+                                         data-version-first='{method['tagRef']['available'][0]}'
+                                         data-version-last='{method['tagRef']['updated'][-1]}'>
                     <div class='def'>
                         <a class='className' id="{method['name']}">{method['name']}</a><span class='methodSep'>(</span>{'<span class="methodSep">, </span>'.join(parameters)}<span class='methodSep'>)</span>{returnedType}
                         {isVirtual}{isStatic}{isSignal}
@@ -1919,6 +1923,7 @@ class KritaBuildDoc:
                     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
                     <title>Krita Python API - Class {className}</title>
                     <link rel="stylesheet" type="text/css" href="dark.css">
+                    <script type="text/javascript" src="filter-classes.js"></script>
                 </head>
                 <body class='class'>
                     <div class='header'>

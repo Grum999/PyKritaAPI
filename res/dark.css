@@ -377,7 +377,7 @@ table.classes tr td {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 span.methodName.hidden + span.methodListSep,
 span.methodName.hidden + br {
