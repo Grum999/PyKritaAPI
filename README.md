@@ -2,6 +2,10 @@
 
 This script allows to build API documentation for [Krita](https://krita.org).
 
+_An online version of produced documentation is available at https://apidoc.krita.maou-maou.fr_
+_This documentation is updated every night at 00.30am UTC_
+
+
 ## Download, Install & Execute
 
 _Instructions are provided for Linux_
