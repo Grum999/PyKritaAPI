@@ -1,0 +1,466 @@
+
+:root {
+    --blue: #007bff;
+    --indigo: #6610f2;
+    --purple: #6f42c1;
+    --pink: #e83e8c;
+    --red: #dc3545;
+    --orange: #fd7e14;
+    --yellow: #ffc107;
+    --green: #28a745;
+    --teal: #20c997;
+    --cyan: #17a2b8;
+    --white: #fff;
+    --gray: #bdc3c7;
+    --gray-dark: #343a40;
+    --primary: #54a3d8;
+    --secondary: #bdc3c7;
+    --success: #28a745;
+    --info: #17a2b8;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --light: #f8f9fa;
+    --dark: #343a40;
+
+    --body-color: #eff0f1;
+    --body-bg: #2f3136;
+    --border-color: #16181b;
+
+    --header-bg: #252628;
+    --body-secondary-fg-color: #859399;
+
+    --font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+
+    --top-height: 8rem;
+    --spacing-medium: 10px;
+    --spacing-large: 16px;
+    --content-maxwidth: 1050px;
+
+    --menu-width: 15vw;
+    --footer-height: 0.75rem;
+}
+
+body {
+    color: var(--body-color);
+    background-color: var(--body-bg);
+    font-family: var(--font-family);
+}
+
+body.index {
+    margin: 0;
+    height: 100vh;
+    overflow: hidden;
+}
+
+body.class {
+    margin: 0;
+    font-size: 1rem;
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary);
+}
+
+a:visited {
+    color: var(--orange);
+}
+
+body h1:first-child {
+    margin-top: 0;
+}
+
+.header {
+    background-color: var(--header-bg);
+    font-size: 2.85rem;
+    font-weight: bold;
+    height: var(--top-height);
+    position: sticky;
+    top: 0px;
+    z-index: 9999;
+    border-bottom: 0px solid;
+    overflow: hidden;
+}
+
+.header .title {
+    max-width: var(--content-maxwidth);
+    margin: 22px auto 0 auto;
+    padding: var(--spacing-medium) var(--spacing-large);
+}
+.content {
+    max-width: var(--content-maxwidth);
+    margin: 0 auto;
+    padding: var(--spacing-medium) var(--spacing-large);
+}
+.menuHeader {
+    height: var(--top-height);
+    padding: 0;
+}
+.menuHeader .title {
+    padding: 0.5rem;
+    font-size: 2.65rem;
+    font-weight: bold;
+}
+
+.menuHeader select {
+    border-radius: 0.25rem;
+    border: 1px solid var(--header-bg);
+    color: var(--body-color);
+    background: var(--body-bg);
+}
+
+.menuHeader .inputField {
+    margin: 0 0.5rem;
+    font-size: 1rem;
+    width: calc(100% - 1rem);
+    padding: 0.25rem;
+}
+
+.buildFrom {
+    margin-bottom: 0.5rem;
+}
+
+.footer {
+    color: var(--body-secondary-fg-color);
+    background: var(--body-bg);
+    position: absolute;
+    border-top: 1px solid var(--gray-dark);
+    width: calc(100vw - var(--menu-width) - 1rem);
+    margin-left: var(--menu-width);
+    height: var(--footer-height);
+    padding: 0.5rem;
+    font-size: 0.8rem;
+    text-align: right;
+    height: 100vh;
+    overflow: hidden;
+}
+
+h1, h2, h3 {
+    background-color: rgba(255,255,255,0.125);
+    padding: 0.15em 0.25em;
+    border-radius: 0.1em;
+}
+
+div.methodList span.methodList:first-child {
+    border-top: 1px dotted rgba(128,128,128,0.25);
+}
+div.methodList span.methodList {
+    display: block;
+    margin-left: 1em;
+    line-height: 1.5em;
+    border-bottom: 1px dotted rgba(128,128,128,0.25);
+    font-family: monospace;
+}
+div.methodList span.methodList:hover {
+    background-color: var(--dark);
+}
+
+.className {
+    font-weight: bold;
+    font-family: monospace;
+}
+.buildFrom a {
+    font-family: monospace;
+}
+.docRefTags {
+    padding: 0.5rem;
+}
+.refTag {
+    background-color: rgba(84, 163, 216, 0.25);
+    font-size: 85%;
+    border-radius: 0.2em;
+    margin-right: 0.25em;
+    overflow: hidden;
+    display: inline-block;
+    line-height: 1.5em;
+}
+.refTag .refTagTag {
+    font-weight: bold;
+    padding: 0.5rem;
+}
+.refTag .refTagSymbol {
+    padding: 0.25rem;
+    background: rgba(84, 163, 216, 0.5);
+}
+.methodDef {
+    margin-left: 1em;
+    background-color: rgba(128,128,128,0.05);
+    margin-bottom: 2em;
+    border-radius: 0.15em;
+    overflow: hidden;
+}
+.methodDef:hover {
+    background-color: rgba(255,255,255,0.05);
+}
+.methodDef .def {
+    font-family: monospace;
+    font-size: 110%;
+    background-color: rgba(255,255,255,0.075);
+    padding: 0.15rem 0.5rem;
+}
+.methodSep {
+    color: var(--pink);
+}
+.methodParameterType {
+    color: var(--teal);
+}
+.methodParameterDefault {
+    color: var(--cyan);
+}
+.methodParamName {
+    color: var(--gray);
+}
+.rightTag::after {
+    float: right;
+    display: block;
+    font-size: 70%;
+    padding: 0.15em;
+    border-radius: 0.15em;
+    line-height: 1em;
+    margin: 2px 2px 2px 0px;
+}
+.rightTag.isStatic::after {
+    background-color: var(--green);
+    content: "Static";
+}
+.rightTag.isSignal::after {
+    background-color: var(--pink);
+    content: "Signal";
+}
+.rightTag.isVirtual::after {
+    background-color: var(--blue);
+    content: "Virtual";
+}
+.inline.rightTag::after {
+    display: inline-block;
+    font-size: 65%;
+    padding: 0.1em;
+    border-radius: 0.15em;
+    margin: 0 2px;
+    float: none;
+    top: -5px;
+    position: relative;
+}
+
+.docSee {
+    padding: 1rem 0 0 0;
+}
+
+.decRef {
+    font-family: monospace;
+}
+
+.docString {
+    padding: 0.5em 0.5em 0.5em 2em;
+}
+.docString p {
+    margin: 0;
+}
+.docString p + p,
+.docString p + h3,
+.docString table + h3 {
+    margin-top: 0.5em;
+}
+.docString h3 {
+    margin: 0;
+    max-width: 150px;
+    background-color: rgba(128,128,128,0.1);
+}
+.docString ul {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+}
+table.paramList {
+    border: 1px solid rgba(128,128,128,0.1);
+    width: 100%;
+    border-collapse: collapse;
+}
+table.paramList tr {
+    border-bottom: 1px dotted rgba(128,128,128,0.25);
+    vertical-align: top;
+}
+table.paramList td {
+    padding: 0.15rem 0.5rem;
+}
+table td.paramName {
+    font-family: monospace;
+    width: 250px;
+}
+
+able.versions,
+table.classes {
+    width: 100%;
+}
+
+table.versions th,
+table.classes th{
+    background-color: rgba(255, 255, 255, 0.125);
+    padding: 0.25rem;
+}
+table.classes th.labelClass {
+    width: 15rem;
+}
+table.classes th.labelVersion {
+    width: 9rem;
+}
+table.versions td,
+table.classes td {
+    padding: 0 .5rem;
+    vertical-align: top;
+}
+table.versions td.tagHash {
+    font-family: monospace;
+}
+
+table.classes td .methodName {
+    font-family: monospace;
+}
+table.classes td .methodListSep {
+    margin-right: 0.5rem;
+}
+table.classes tr td {
+    border-top: 2px solid rgba(255, 255, 255, 0.125);
+    padding-top: 3px;
+}
+
+.noDescriptionProvided {
+    font-style: italic;
+    opacity: 0.35;
+}
+
+.code {
+    font-family: monospace;
+    border: 2px dashed rgba(128,128,128,0.45);
+    padding: 0.5em;
+    margin: 0.5em 0;
+}
+.code p {
+    white-space: pre;
+}
+
+.leftMenu {
+    display: inline-block;
+    position: absolute;
+    width: var(--menu-width);
+    background: var(--header-bg);
+    height: 100vh;
+}
+.leftMenu .menuContent{
+    height: calc(100vh - var(--top-height));
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.leftMenu ul {
+    padding: 0 1.25rem 0 2.5rem;
+    margin: 0;
+}
+.leftMenu ul li {
+    list-style-type: disclosure-closed;
+}
+.frameContent {
+    width: calc(100vw - var(--menu-width));
+    height: calc(100vh - var(--footer-height) - 1rem);
+    display: block;
+    padding: 0;
+    margin: 0 0 0 var(--menu-width);
+    border: none;
+}
+.leftMenu h3 {
+    margin: 0;
+}
+
+.bulipy {
+    font-size: 65%;
+    display: block;
+    text-align: right;
+    font-style: italic;
+}
+
+.hidden {
+    display: none;
+}
+span.methodName.hidden + span.methodListSep,
+span.methodName.hidden + br {
+    display: none;
+}
+
+.pyNewLine::after {
+    content: "\a";
+    white-space: pre;
+}
+.pySpace {
+    white-space: pre;
+}
+.pyComment {
+    color: var(--grey);
+}
+.pyStr, .pyFstr {
+    color: #98c379;
+}
+.pyStr_l_s, .pyStr_l_d,
+.pyFstr_l_s, .pyFstr_l_d {
+    color: #aed095;
+}
+.pyFstr, .pyFstr_l_s, .pyFstr_l_d {
+    font-style: italc;
+}
+.pyBstr {
+    color: #56b6c2;
+}
+.pyBstr_l_s, .pyBstr_l_d {
+    color: #7cc6d0;
+}
+.pyNumber_int, .pyNumber_flt {
+    color: #c9986a;
+}
+.pyKwrd, .pyKwrd_soft {
+    color: #c678dd;
+    font-weight: bold;
+}
+.pyKwrd_const {
+    color: #dd7892;
+    font-weight: bold;
+}
+.pyKwrd_operator {
+    color: #ff99ff;
+    font-weight: bold;
+}
+.pyBuiltin_fct {
+    color: #80bfff;
+}
+.pyBuiltin_except {
+    color: #e83030;
+    font-weight: bold;
+}
+.pyBoperators, .pyDoperators {
+    color: #ff99ff;
+}
+.pyDelim_operator {
+    color: #ff99ff;
+}
+.pyDelim,
+.pyDelim_separator,
+.pyDelim_parO, .pyDelim_parC,
+.pyDelim_brackO, .pyDelim_brackC,
+.pyDelim_curlbO, .pyDelim_curlbC {
+    color: #ff66d9;
+}
+.pyFunction_decl, .pyClass_decl {
+    color: #ffe066;
+    font-weight: bold;
+}
+.pyIdentifier {
+    color: #e6e6e6;
+}
+.pyDecorator {
+    color: #ffffe6;
+    font-weight: bold;
+    font-style: italic;
+}
+
+
+
+
+
+
+
