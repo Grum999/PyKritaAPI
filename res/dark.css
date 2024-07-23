@@ -208,8 +208,11 @@ div.methodList span.methodList:hover {
 .methodSep {
     color: var(--pink);
 }
-.methodParameterType {
+.methodParameterType, .methodParameterType a {
     color: var(--teal);
+}
+.methodParameterType a:hover {
+    text-decoration: underline;
 }
 .methodParameterDefault {
     color: var(--cyan);

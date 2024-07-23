@@ -34,8 +34,8 @@ from modules.tokenizer import (
 
 
 __NAME__ = "Krita Python API documentation builder"
-__VERSION__ = "1.1.0"
-__DATE__ = "2024-07-20"
+__VERSION__ = "1.2.0"
+__DATE__ = "2024-07-23"
 
 
 class LanguageDefCpp(LanguageDef):
@@ -1194,6 +1194,24 @@ class KritaBuildDoc:
 
         return returned
 
+    def __htmlGetClassLink(self, className, methodName=""):
+        """Return hyperlink for class name or class name if not possible to create an hyperlink"""
+
+        if listType := re.search("^list\[([a-z0-9_]+)\]$", className, re.I):
+            return f"list[{self.__htmlGetClassLink(listType.group(1))}]"
+        elif dictType := re.search("^dict\[([a-z0-9_]+):\s([a-z0-9_]+)\]$", className, re.I):
+            return f"dict[{self.__htmlGetClassLink(dictType.group(1))}: {self.__htmlGetClassLink(dictType.group(2))}]"
+
+        if className not in self.__kritaReferential['classes']:
+            return className
+
+        if methodName:
+            returned = f"<a href='kapi-class-{className}.html#{methodName}' target='iframeClass'>{methodName}</a>"
+        else:
+            returned = f"<a href='kapi-class-{className}.html' target='iframeClass'>{className}</a>"
+
+        return returned
+
     def __loadJson(self):
         """Load Json documentation file"""
         if os.path.exists(self.__jsonDatabase):
@@ -1669,14 +1687,14 @@ class KritaBuildDoc:
                     else:
                         param = f"<span class='methodParamName'>{parameter['name']}</span>"
                         if parameter['type']:
-                            param = f"{param}<span class='methodSep'>: </span><span class='methodParameterType'>{parameter['type']}</span>"
+                            param = f"{param}<span class='methodSep'>: </span><span class='methodParameterType'>{self.__htmlGetClassLink(parameter['type'])}</span>"
                         if parameter['default']:
                             param = f"{param}<span class='methodSep'> = </span><span class='methodParameterDefault'>{parameter['default']}</span>"
                         parameters.append(param)
 
                 returnedType = ''
                 if method["returned"] != 'void' and method["returned"] != className:
-                    returnedType = f"<span class='methodSep'> &#10142; </span><span class='methodParameterType'>{method['returned']}</span>"
+                    returnedType = f"<span class='methodSep'> &#10142; </span><span class='methodParameterType'>{self.__htmlGetClassLink(method['returned'])}</span>"
 
                 isVirtual = ""
                 if method['isVirtual']:
@@ -1895,66 +1913,6 @@ class KritaBuildDoc:
 
             return "\n".join(returned)
 
-        def formatMethod(methodNfo, className=None):
-            # return formatted method string
-            indent = ' ' * 4
-
-            parameters = methodNfo["parameters"]
-            description = methodNfo["description"].strip('\n')
-            if description:
-                description += "\n"
-
-            implementedFrom = methodNfo["tagRef"]["available"][0]
-            lastUpdatedFrom = methodNfo["tagRef"]["updated"][-1]
-
-            if methodNfo['isVirtual']:
-                description += "@Virtual\n"
-
-            description += f"@Implemented with: {self.__getTagName(implementedFrom)}"
-            if implementedFrom != lastUpdatedFrom:
-                description += f"\n@Last updated with: {self.__getTagName(lastUpdatedFrom)}"
-
-            returned = []
-            if methodNfo['isSignal']:
-                if description:
-                    description = textwrap.indent(description, '# ')
-                    returned.append(description)
-
-                sigParam = ''
-                if parameters:
-                    sigParam = ", ".join([parameter['type'] for parameter in parameters])
-
-                returned.append(f'{methodNfo["name"]} = pyqtSignal({sigParam})')
-            else:
-                if methodNfo['isStatic']:
-                    returned.append('@staticmethod')
-                    fctParam = []
-                else:
-                    fctParam = ['self']
-
-                if parameters:
-                    for parameter in parameters:
-                        param = parameter['name']
-                        if parameter['type']:
-                            param = f"{param}: {parameter['type']}"
-                        if parameter['default']:
-                            param = f"{param} = {parameter['default']}"
-                        fctParam.append(param)
-
-                returnedType = ''
-                if methodNfo["returned"] != 'void' and methodNfo["returned"] != className:
-                    returnedType = f" -> {methodNfo['returned']}"
-
-                if len(description.split("\n")) > 1:
-                    description += "\n"
-
-                returned.append(f'# Source location, line {methodNfo["sourceCodeLine"]}')
-                returned.append(f'def {methodNfo["name"]}({", ".join(fctParam)}){returnedType}:')
-                returned.append(textwrap.indent(f'"""{description}"""', indent))
-                returned.append(f"{indent}pass")
-
-            return "\n".join(returned)
-
         def buildHtmlClass(classNfo, tag):
             # build html file for given class
             className = classNfo["name"]
@@ -2133,7 +2091,7 @@ class KritaBuildDoc:
                     methodsRef[method['name']]=(f"<span class='methodName {' '.join(classes)}'"
                                                 f" data-version-first='{method['tagRef']['available'][0]}'"
                                                 f" data-version-last='{method['tagRef']['updated'][-1]}'>"
-                                                f"<a href='kapi-class-{className}.html#{method['name']}' target='iframeClass'>{method['name']}</a>"
+                                                f"{self.__htmlGetClassLink(className, method['name'])}"
                                                 f"</span>"
                                                 )
                 for index, methodName in enumerate(sorted(methodsRef.keys())):
@@ -2144,7 +2102,7 @@ class KritaBuildDoc:
                 tableContent.append(f"<tr data-id='{className}'"
                                     f" data-version-first='{classNfo[className]['tagRef']['available'][0]}'"
                                     f" data-version-last='{classNfo[className]['tagRef']['updated'][-1]}'>"
-                                    f"<td class='className'><a href='kapi-class-{className}.html' target='iframeClass'>{className}</a></td>"
+                                    f"<td class='className'>{self.__htmlGetClassLink(className)}</td>"
                                     f"<td class='version'>{self.__htmlFormatRefTags(classNfo[className]['tagRef'], 'f')}</td>"
                                     f"<td class='version'>{self.__htmlFormatRefTags(classNfo[className]['tagRef'], 'ld')}</td>"
                                     f"<td class='members'>{''.join(methods)}</td>"
