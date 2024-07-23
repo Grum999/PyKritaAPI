@@ -75,7 +75,7 @@ cd ~/kritadoc/PyKritaAPI
 
 ## Releases
 
-_[2024-07-23] Version [1.2.0](./releases/tag/1.2.0)_
+_[2024-07-23] Version [1.2.0](https://github.com/Grum999/PyKritaAPI/releases/tag/1.2.0)_
 - For parameters and returned values for which type is a Krita API class, manage hyperlink to class
 
 
