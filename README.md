@@ -73,6 +73,11 @@ cd ~/kritadoc/PyKritaAPI
 ./pykritaapi.py --help
 ```
 
+## Releases
+
+_[2024-07-23] Version [1.2.0](./releases/tag/1.2.0)_
+- For parameters and returned values for which type is a Krita API class, manage hyperlink to class
+
 
 ## License
 
