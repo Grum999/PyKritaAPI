@@ -1,3 +1,8 @@
+> Note: has been moved on Codeberg
+> 
+> https://codeberg.org/Grum999/PyKritaAPI
+
+
 # Krita Python API documentation builder
 
 This script allows to build API documentation for [Krita](https://krita.org).
